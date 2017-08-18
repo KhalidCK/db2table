@@ -1,0 +1,10 @@
+pip
+ipython
+bumpversion
+watchdog
+flake8
+coverage
+html5lib
+
+pytest
+pytest-runner
