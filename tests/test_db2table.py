@@ -16,6 +16,7 @@ from db2table import cli
 DB_PATH = '/sharedData/work/osp_configuration.db'
 TABLE = 'test'
 
+
 def init_db(engine):
     sql_table_1 = '''
     create table test1
@@ -60,13 +61,12 @@ def init_db(engine):
     connection.close()
 
 
-
 @pytest.fixture
 def db():
-    #db = records.Database('sqlite:///')
     engine = create_engine('sqlite:///')
     init_db(engine)
     return engine
+
 
 def test_shape_of_table(db):
     data = db2table.to_dict(db)
@@ -76,8 +76,8 @@ def test_shape_of_table(db):
 
 
 def test_to_html5_compliant():
-    dummy = [{'a':1,'b':2,'c':3},{'a':4,'b':5,'c':6}]
-    html = db2table.to_html(dummy,'test')
+    dummy = [{'a': 1, 'b': 2, 'c': 3}, {'a': 4, 'b': 5, 'c': 6}]
+    html = db2table.to_html(dummy, 'test')
     parser = html5lib.HTMLParser(strict=True)
     try:
         parser.parse(html)
@@ -90,12 +90,12 @@ def test_to_html5_compliant():
 def test_command_line_interface(tmpdir):
     """Test the CLI."""
     # user enter a path to sqlite db,and output folder
-    folder= str (tmpdir.mkdir("html"))
-    db_path= str( tmpdir.mkdir("db").join('test.db') )
-    engine = create_engine('sqlite:///'+db_path)
+    folder = str(tmpdir.mkdir("html"))
+    db_path = str(tmpdir.mkdir("db").join('test.db'))
+    engine = create_engine('sqlite:///' + db_path)
     init_db(engine)
     # produce tablename.html for all table in the db
     runner = CliRunner()
-    result = runner.invoke(cli,[db_path,folder])
+    result = runner.invoke(cli, [db_path, folder])
     assert result.exit_code == 0
     len(os.listdir(folder)) == 2
