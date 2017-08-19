@@ -4,7 +4,7 @@ Convert a sqlite db file to a friendly representation thanks to [datatable plugi
 
 ### Installation
 
-python setup.py install
+pip install db2table
 
 ### Usage
 
