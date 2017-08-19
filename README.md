@@ -1,6 +1,6 @@
 # DB reporting
 
-Convert a sqlite db file to a friendly representation thanks to [https://datatables.net/](datatable plugin)
+Convert a sqlite db file to a friendly representation thanks to [datatable plugin](https://datatables.net)
 
 ### Installation
 
