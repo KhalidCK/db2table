@@ -13,9 +13,6 @@ from click.testing import CliRunner
 import db2table
 from db2table import cli
 
-DB_PATH = '/sharedData/work/osp_configuration.db'
-TABLE = 'test'
-
 
 def init_db(engine):
     sql_table_1 = '''
