@@ -1,4 +1,6 @@
 pip
+wheel
+twine
 ipython
 bumpversion
 watchdog

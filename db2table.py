@@ -115,7 +115,7 @@ def to_html(rows, title, _id='data', _class='table'):
         header = list(rows[0].keys())
     except IndexError as e:
         logger.error(e)
-        raise ValueError('rows should contains at least one row')
+        raise ValueError(f'{title} seems to be empty (no rows)')
     template = Template(TEMPLATE)
     return template.render({'data': rows,
                           'title': title,
