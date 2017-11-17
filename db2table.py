@@ -3,13 +3,72 @@
 import os
 import click
 from slugify import slugify
-from jinja2 import Environment 
-from jinja2 import FileSystemLoader
-from pkg_resources import resource_filename
+from jinja2 import Template
 from sqlalchemy import create_engine
 import logging
 
 logger = logging.getLogger('__name__')
+
+TEMPLATE = """
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+    <title>{{title}}</title>
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+            <table id="{{_id}}" class="{{table_class}}">
+              <!-- table header -->
+              <thead>
+                <tr>
+                   {% for key in header %}
+                   <th> {{ key }} </th>
+                   {% endfor %}
+                </tr>
+              </thead>
+
+              <!-- table rows -->
+              <tbody>
+              {% for dict_item in data %}
+                <tr>
+                   {% for key in header %}
+                   <td> {{ dict_item[key] }} </td>
+                   {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#{{_id}}').DataTable( {
+                dom: 'Bfrtip',
+                buttons: [
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ]
+            } );
+        } );
+    </script>
+</body>
+</html>
+"""
 
 
 def to_dict(engine):
@@ -51,20 +110,18 @@ def to_html(rows, title, _id='data', _class='table'):
     str
         html as text
     '''
-    template_dir = resource_filename('db2table', 'templates')
-    template = 'table.html'
     # FIXME:header as a variable ?
     try:
         header = list(rows[0].keys())
     except IndexError as e:
         logger.error(e)
         raise ValueError('rows should contains at least one row')
-    env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True)
-    return env.get_template(template).render({'data': rows,
-                                              'title': title,
-                                              '_id': _id,
-                                              'table_class': _class,
-                                              'header': header})
+    template = Template(TEMPLATE)
+    return template.render({'data': rows,
+                          'title': title,
+                          '_id': _id,
+                          'table_class': _class,
+                          'header': header})
 
 
 @click.command()
