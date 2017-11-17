@@ -19,7 +19,7 @@ test_requirements = [
 
 setup(
     name='db2table',
-    version='0.2.0',
+    version='0.2.1',
     description="Extract data from database in html table",
     author="Khalid Chakhmoun",
     author_email='fr.ckhalid@gmail.com',
